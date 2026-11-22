@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InvestPro — DÉMO</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Arial,sans-serif; }
+  body { background:#0d1117; color:#e6edf3; min-height:100vh; }
+  .demo-banner {
+    background:#b45309; color:#fff; text-align:center; padding:8px;
+    font-weight:bold; font-size:14px; letter-spacing:1px;
+  }
+  header { background:#161b22; padding:20px; text-align:center; border-bottom:1px solid #30363d; }
+  header h1 { color:#58a6ff; }
+  header p { color:#8b949e; margin-top:5px; }
+  .container { max-width:900px; margin:30px auto; padding:0 15px; }
+  .plans { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; margin-bottom:40px; }
+  .plan { background:#161b22; border:1px solid #30363d; border-radius:12px; padding:25px; text-align:center; }
+  .plan h3 { color:#58a6ff; margin-bottom:10px; }
+  .plan .montant { font-size:28px; font-weight:bold; margin:10px 0; }
+  .plan .gain { color:#3fb950; font-weight:bold; }
+  .plan button {
+    margin-top:15px; background:#238636; color:#fff; border:none;
+    padding:10px 25px; border-radius:8px; cursor:pointer; font-size:15px;
+  }
+  .plan button:hover { background:#2ea043; }
+  .card { background:#161b22; border:1px solid #30363d; border-radius:12px; padding:25px; margin-bottom:20px; }
+  .card h2 { color:#58a6ff; margin-bottom:15px; }
+  input, select {
+    width:100%; padding:12px; margin:8px 0 15px; border-radius:8px;
+    border:1px solid #30363d; background:#0d1117; color:#e6edf3; font-size:15px;
+  }
+  .btn {
+    width:100%; padding:12px; background:#238636; color:#fff; border:none;
+    border-radius:8px; cursor:pointer; font-size:16px; font-weight:bold;
+  }
+  .btn:hover { background:#2ea043; }
+  .hidden { display:none; }
+  .solde { font-size:22px; font-weight:bold; color:#3fb950; }
+  .note { color:#f85149; font-size:13px; margin-top:10px; }
+  #message { margin-top:15px; padding:12px; border-radius:8px; display:none; }
+  .ok { background:#12261e; color:#3fb950; border:1px solid #238636; }
+  .err { background:#2d1215; color:#f85149; border:1px solid #f85149; }
+  table { width:100%; border-collapse:collapse; margin-top:10px; }
+  th, td { padding:10px; border-bottom:1px solid #30363d; text-align:left; font-size:14px; }
+  footer { text-align:center; padding:20px; color:#8b949e; font-size:13px; }
+</style>
+</head>
+<body>
+
+<div class="demo-banner">⚠️ SITE 100% DÉMO — AUCUN PAIEMENT RÉEL — SIMULATION UNIQUEMENT ⚠️</div>
+
+<header>
+  <h1>InvestPro</h1>
+  <p>Simulateur d'investissement (démo — aucun argent réel)</p>
+</header>
+
+<div class="container">
+
+  <div class="plans">
+    <div class="plan">
+      <h3>Plan Bronze</h3>
+      <div class="montant">1 000 F</div>
+      <p>Vous recevez</p>
+      <div class="gain">2 000 F (x2)</div>
+      <button onclick="choisirPlan(1000, 2000)">Choisir</button>
+    </div>
+    <div class="plan">
+      <h3>Plan Argent</h3>
+      <div class="montant">5 000 F</div>
+      <p>Vous recevez</p>
+      <div class="gain">10 000 F (x2)</div>
+      <button onclick="choisirPlan(5000, 10000)">Choisir</button>
+    </div>
+    <div class="plan">
+      <h3>Plan Or</h3>
+      <div class="montant">10 000 F</div>
+      <p>Vous recevez</p>
+      <div class="gain">20 000 F (x2)</div>
+      <button onclick="choisirPlan(10000, 20000)">Choisir</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="depotCard">
+    <h2>Étape 1 — Dépôt (simulation)</h2>
+    <label>Montant à déposer (F CFA)</label>
+    <input type="number" id="montant" readonly>
+    <label>Votre nom</label>
+    <input type="text" id="nom" placeholder="Votre nom (démo)">
+    <label>Moyen de paiement</label>
+    <select id="moyen">
+      <option>Orange Money</option>
+      <option>Wave</option>
+      <option>MTN MoMo</option>
+      <option>Moov Money</option>
+    </select>
+    <label>Numéro de paiement (démo)</label>
+    <input type="text" value="05 75 74 05 84" readonly>
+    <div class="note">⚠️ Simulation : n'envoyez aucun argent réel. Ce numéro est une donnée factice de démonstration.</div>
+    <button class="btn" onclick="faireDepot()">Simuler le dépôt</button>
+    <div id="message"></div>
+  </div>
+
+  <div class="card hidden" id="compteCard">
+    <h2>Mon compte (démo)</h2>
+    <p>Solde : <span class="solde" id="solde">0</span> F CFA</p>
+    <button class="btn" style="margin-top:15px" onclick="retirer()">Demander un retrait (simulation)</button>
+    <h2 style="margin-top:25px">Historique</h2>
+    <table>
+      <thead><tr><th>Action</th><th>Montant</th><th>Statut</th></tr></thead>
+      <tbody id="historique"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>InvestPro — Projet de démonstration. Aucune transaction réelle. Ne jamais envoyer d'argent.</footer>
+
+<script>
+let solde = 0;
+let gainEnAttente = 0;
+const lignes = [];
+
+function choisirPlan(depot, gain) {
+  document.getElementById('depotCard').classList.remove('hidden');
+  document.getElementById('compteCard').classList.remove('hidden');
+  document.getElementById('montant').value = depot;
+  document.getElementById('depotCard').dataset.gain = gain;
+  document.getElementById('depotCard').scrollIntoView({behavior:'smooth'});
+}
+
+function afficherMsg(texte, type) {
+  const m = document.getElementById('message');
+  m.textContent = texte;
+  m.className = type;
+  m.style.display = 'block';
+}
+
+function ajouterLigne(action, montant, statut) {
+  lignes.unshift({action, montant, statut});
+  const tbody = document.getElementById('historique');
+  tbody.innerHTML = lignes.map(l =>
+    `<tr><td>${l.action}</td><td>${l.montant.toLocaleString()} F</td><td>${l.statut}</td></tr>`
+  ).join('');
+}
+
+function faireDepot() {
+  const nom = document.getElementById('nom').value.trim();
+  if (!nom) { afficherMsg("Veuillez entrer un nom (même fictif).", "err"); return; }
+
+  const depot = parseInt(document.getElementById('montant').value);
+  const gain = parseInt(document.getElementById('depotCard').dataset.gain);
+  const moyen = document.getElementById('moyen').value;
+
+  // SIMULATION : rien n'est envoyé nulle part
+  solde = gain; // le solde crédité est fictif
+  ajouterLigne(`Dépôt simulé via ${moyen}`, depot, "Simulé");
+  ajouterLigne("Crédit du gain (x2)", gain, "Fictif");
+  document.getElementById('solde').textContent = solde.toLocaleString();
+  afficherMsg(`✅ Dépôt SIMULÉ de ${depot.toLocaleString()} F accepté. Solde fictif crédité : ${gain.toLocaleString()} F. Aucun argent réel n'a bougé.`, "ok");
+}
+
+function retirer() {
+  if (solde <= 0) { afficherMsg("Aucun solde à retirer.", "err"); return; }
+  ajouterLigne("Demande de retrait", solde, "Simulé");
+  afficherMsg(`Retrait de ${solde.toLocaleString()} F simulé. (Démo : rien n'est réellement envoyé.)`, "ok");
+  solde = 0;
+  document.getElementById('solde').textContent = "0";
+}
+</script>
+
+</body>
+</html>
